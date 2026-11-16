@@ -8,7 +8,7 @@ Ce guide résume les informations du dépôt pour le MW6 hw2.1 avec le firmware 
 
 Le connecteur J4 expose la console série `ttyS0`, configurée à **115200 bauds, 8 bits, sans parité, 1 bit d'arrêt (115200 8N1)**. La photo du PCB et du connecteur est dans [`images/tenda-mw6-board-uart.png`](images/tenda-mw6-board-uart.png). D'après le dépôt, en partant de la broche 1 du côté de la flash, l'ordre est VCC, RX, TX, GND.
 
-1. Utilisez un adaptateur **USB–TTL 3,3 V**, pas un adaptateur RS-232. Routeur alimenté, reliez la masse (GND) et les lignes TX/RX croisées (TX de l'adaptateur vers RX du routeur et inversement). **Ne raccordez pas VCC** si le routeur est déjà alimenté.
+1. Utilisez un adaptateur **USB–TTL 3,3 V**, pas un adaptateur RS-232. Routeur alimenté, reliez la masse (GND) et les lignes TX/RX croisées (TX de l'adaptateur vers RX du routeur et inversement). **Ne raccordez pas VCC** si le routeur est déjà alimenté. Une carte ESP32-S3/C3/C6 à USB natif peut aussi servir de pont série avec le [sketch USB-CDC ↔ UART](esp32-uart-bridge/README.md) ; ses broches et son mode USB dépendent du modèle de carte.
 2. Ouvrez le terminal série, par exemple :
 
    ```sh
@@ -89,7 +89,7 @@ La DMZ expose largement la machine cible aux connexions entrantes : utilisez-la 
 - Le journal mentionne une fenêtre d'upload réseau/TFTP dans le bootloader, mais ce n'est pas une procédure de restauration complète validée dans ce dépôt. Ne supposez pas qu'elle récupérera une image arbitraire.
 - Un appui sur Reset d'environ 3 secondes est rapporté comme activant le service telnet ; environ 6 secondes réinitialisent les paramètres d'usine. Les identifiants telnet ne sont pas établis ici. Ce n'est pas le chemin recommandé pour le shell root.
 - Les commandes du bootloader telles que `FLW`, `FLERASE` ou `ERASECHIP` peuvent écraser la flash. Ne les utilisez pas sans sauvegarde complète, procédure de restauration vérifiée et matériel approprié.
-- Ce dépôt n'est pas un projet avec un programme à compiler : aucune commande de build ou suite de tests n'est fournie.
+- Ce dépôt n'a pas de build global ni de suite de tests. Le sketch ESP32 de pont UART est autonome et se compile séparément avec le cœur Arduino ESP32 ; voir [`esp32-uart-bridge/README.md`](esp32-uart-bridge/README.md).
 
 ## Pour approfondir
 
@@ -97,4 +97,5 @@ La DMZ expose largement la machine cible aux connexions entrantes : utilisez-la 
 - [`README-ru.md`](README-ru.md) — notes détaillées, notamment les commandes d'extraction.
 - [`boot.log`](boot.log), [`inside_tenda.log`](inside_tenda.log), [`flashrom.log`](flashrom.log) — traces capturées.
 - [`bootloader options.md`](<bootloader options.md>), [`mtd_blocks.md`](mtd_blocks.md) — commandes et disposition mémoire.
-- [`arduino-spi-flasher/README.md`](arduino-spi-flasher/README.md) — autre matériel de lecture SPI, avec client .NET indiqué pour Windows.
+- [`esp32-uart-bridge/README.md`](esp32-uart-bridge/README.md) — sketch ESP32-S3/C3/C6 pour faire le pont USB-CDC ↔ console UART J4 ; **VCC de J4 non connecté**.
+- [`arduino-spi-flasher/README.md`](arduino-spi-flasher/README.md) — matériel Arduino/ESP8266 de lecture SPI, distinct du pont de console UART, avec client .NET indiqué pour Windows.
